@@ -10,4 +10,15 @@
 
 @interface MainViewController : UIViewController <FlipsideViewControllerDelegate>
 
+
+@property (weak, nonatomic) IBOutlet UITextField *ipTextField;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *drawOnSegment;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *colourSelectSegment;
+
+
+
+- (IBAction)zapAction:(id)sender;
+
+
+
 @end
