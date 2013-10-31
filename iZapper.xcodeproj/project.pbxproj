@@ -204,6 +204,9 @@
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Rich Porter";
 				TargetAttributes = {
+					9B425E9D181DA30A002BAFFD = {
+						DevelopmentTeam = A54JRRNXDG;
+					};
 					9B425EC1181DA30A002BAFFD = {
 						TestTargetID = 9B425E9D181DA30A002BAFFD;
 					};
@@ -384,10 +387,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iZapper/iZapper-Prefix.pch";
 				INFOPLIST_FILE = "iZapper/iZapper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -397,10 +403,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iZapper/iZapper-Prefix.pch";
 				INFOPLIST_FILE = "iZapper/iZapper-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -466,6 +475,7 @@
 				9B425ED5181DA30A002BAFFD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		9B425ED6181DA30A002BAFFD /* Build configuration list for PBXNativeTarget "iZapperTests" */ = {
 			isa = XCConfigurationList;
@@ -474,6 +484,7 @@
 				9B425ED8181DA30A002BAFFD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

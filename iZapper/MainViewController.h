@@ -8,12 +8,13 @@
 
 #import "FlipsideViewController.h"
 
-@interface MainViewController : UIViewController <FlipsideViewControllerDelegate>
+@interface MainViewController : UIViewController <FlipsideViewControllerDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
 
 
 @property (weak, nonatomic) IBOutlet UITextField *ipTextField;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *drawOnSegment;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *colourSelectSegment;
+@property (weak, nonatomic) IBOutlet UIPickerView *gridPicker;
 
 
 
