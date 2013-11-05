@@ -19,10 +19,11 @@
     NSString * _ipAddress;
     NSArray *_sxga_sxga, *_hd_sxga, *_hd_hd, *_wuxga_sxga, *_wuxga_hd, *_wuxga_wuxga, *_gridNames;
     NSString *_R, *_G, *_B, *_C, *_Y, *_M, *_W, *_shadedRGB, *_chosenProjector, *_userRGB;
-    int _gridBoxesWide, _gridBoxesHigh, _centerLeft, _centerRight, _middleTop, _middleBottom, _gridsize, _delayBtwLines;
+    int _gridBoxesWide, _gridBoxesHigh, _centerLeft, _centerRight, _middleTop, _middleBottom, _gridsize, _delayBtwLines, _thePort;
     double _delayInSeconds;
     NSArray *_projGrid;
     NSInteger *_selectedGrid;
+    
     
 }
 
@@ -30,7 +31,9 @@
 {
     [super viewDidLoad];
 	//for testing set default ip manually
-    _ipAddress = @"192.168.1.100";
+    _ipAddress = @"192.168.8.8";
+    // set port number
+    _thePort = 3002;
     //and set a default value for laziness
     [_ipTextField setText:_ipAddress];
     
@@ -61,6 +64,10 @@
     _wuxga_sxga = [NSArray arrayWithObjects:[NSNumber numberWithInt:260], [NSNumber numberWithInt:75],[NSNumber numberWithInt:1659],[NSNumber numberWithInt:1124], [NSNumber numberWithInt:588], [NSNumber numberWithInt:901], [NSNumber numberWithInt:24], [NSNumber numberWithInt:118], [NSNumber numberWithInt:1399], [NSNumber numberWithInt:1049], [NSNumber numberWithInt:1920], [NSNumber numberWithInt:1200], nil];
     _wuxga_hd = [NSArray arrayWithObjects:[NSNumber numberWithInt:0], [NSNumber numberWithInt:60],[NSNumber numberWithInt:1919],[NSNumber numberWithInt:1139], [NSNumber numberWithInt:573], [NSNumber numberWithInt:897], [NSNumber numberWithInt:54], [NSNumber numberWithInt:126], [NSNumber numberWithInt:1919], [NSNumber numberWithInt:1179], [NSNumber numberWithInt:1920], [NSNumber numberWithInt:1200], nil];
     _wuxga_wuxga = [NSArray arrayWithObjects:[NSNumber numberWithInt:0], [NSNumber numberWithInt:0],[NSNumber numberWithInt:1919],[NSNumber numberWithInt:1199], [NSNumber numberWithInt:577], [NSNumber numberWithInt:897], [NSNumber numberWithInt:46], [NSNumber numberWithInt:126], [NSNumber numberWithInt:1919], [NSNumber numberWithInt:1199], [NSNumber numberWithInt:1920], [NSNumber numberWithInt:1200], nil];
+    
+    _gridsize = 64;
+    _delayBtwLines = 50;
+    _delayInSeconds = 0.05f;
 
 }
 
@@ -90,34 +97,34 @@
     
     
     //Get the desired grid...
-    NSLog(@"Chosen Projector is %@", _chosenProjector);
+    NSLog(@"ZAPMETHOD: Chosen Projector is %@", _chosenProjector);
     
     //Set _gridBoxesWide
     _gridBoxesWide = ([[_projGrid objectAtIndex:8]integerValue]/_gridsize + 1);
-    // NSLog(@"_gridBoxesWide == %d", _gridBoxesWide);
+    NSLog(@"_gridBoxesWide == %d", _gridBoxesWide);
     
     //Set _gridBoxesHigh
     _gridBoxesHigh = ([[_projGrid objectAtIndex:9]integerValue]/(_gridsize + 1));
-    // NSLog(@"_gridBoxesWide == %d", _gridBoxesHigh);
+    NSLog(@"_gridBoxesWide == %d", _gridBoxesHigh);
     
     //Set _centerLeft
     _centerLeft = ([[_projGrid objectAtIndex:10]integerValue]/2);
-    //NSLog(@"_centerLeft == %d", _centerLeft);
+    NSLog(@"_centerLeft == %d", _centerLeft);
     
     //set _centerRight
     _centerRight = _centerLeft +1;
-    // NSLog(@"_centerRight == %d", _centerRight);
+    NSLog(@"_centerRight == %d", _centerRight);
     
     //set _middleTop
     _middleTop = ([[_projGrid objectAtIndex:11]integerValue]/2);
-    // NSLog(@"_middleTop == %d", _middleTop);
+    NSLog(@"_middleTop == %d", _middleTop);
     
     //Set grid colour
     [self chooseColour];
     
     //set _middleBottom
     _middleBottom = _middleTop +1;
-    // NSLog(@"_middleBottom == %d", _middleBottom);
+    NSLog(@"_middleBottom == %d", _middleBottom);
     
     //Get IP Address
     
@@ -125,6 +132,8 @@
         _ipAddress = _ipTextField.text;
         NSLog(@"IPAdresss has been set to %@", _ipAddress);
     }
+    
+    NSLog(@"Port number is set to %d", _thePort);
     
     //Start the Network stream to the projector
     [self initNetworkCommunication];
@@ -136,9 +145,8 @@
     
     [self sendThisMessage:@"(UTP0)"];
     
-    if (![_overwriteTextField.text  isEqual: @""]){
-        [self sendThisMessage:_overwriteTextField.text];
-        NSLog(@"Used the ovrerride method");
+    if (3<2){
+        NSLog(@"This method should never be called");
         
     } else {
         int i = 0;
@@ -159,13 +167,15 @@
         i = 0;
         while (i < [[_projGrid objectAtIndex:6]integerValue]){
             [self sendThisMessage:@"(UTP5 "];
-            [self sendThisMessage:[NSString stringWithFormat:@"%ld",([[_projGrid objectAtIndex:0] integerValue])]];
+            [self sendThisMessage:[NSString stringWithFormat:@"%ld",
+                                   (long)
+                                   ([[_projGrid objectAtIndex:0] integerValue])]];
             [self sendThisMessage:@" "];
-            [self sendThisMessage:([NSString stringWithFormat:@"%ld",([[_projGrid objectAtIndex:4] integerValue]+i)])];
+            [self sendThisMessage:([NSString stringWithFormat:@"%d",([[_projGrid objectAtIndex:4] integerValue]+i)])];
             [self sendThisMessage:@" "];
-            [self sendThisMessage:([NSString stringWithFormat:@"%ld",[[_projGrid objectAtIndex:2] integerValue]])];
+            [self sendThisMessage:([NSString stringWithFormat:@"%ld",(long)[[_projGrid objectAtIndex:2] integerValue]])];
             [self sendThisMessage:@" "];
-            [self sendThisMessage:([NSString stringWithFormat:@"%ld",([[_projGrid objectAtIndex:4] integerValue]+i)])];
+            [self sendThisMessage:([NSString stringWithFormat:@"%d",([[_projGrid objectAtIndex:4] integerValue]+i)])];
             [self sendThisMessage:_shadedRGB];
             // NSLog(@"Horizontal Shading has executed %i times", i);
             [NSThread sleepForTimeInterval:_delayInSeconds];
@@ -176,25 +186,27 @@
         while (i < (_gridBoxesWide/2) ){
             //vert lines from left edge to center
             [self sendThisMessage:@"(UTP5 "];
-            [self sendThisMessage:[NSString stringWithFormat:@"%ld",([[_projGrid objectAtIndex:0] integerValue]+(i * _gridsize))]];
+            [self sendThisMessage:[NSString stringWithFormat:@"%d",([[_projGrid objectAtIndex:0] integerValue]+(i * _gridsize))]];
             [self sendThisMessage:@" "];
-            [self sendThisMessage:([NSString stringWithFormat:@"%ld",[[_projGrid objectAtIndex:1] integerValue]])];
+            [self sendThisMessage
+             
+             :([NSString stringWithFormat:@"%ld",(long)[[_projGrid objectAtIndex:1] integerValue]])];
             [self sendThisMessage:@" "];
-            [self sendThisMessage:[NSString stringWithFormat:@"%ld",([[_projGrid objectAtIndex:0] integerValue]+(i * _gridsize))]];
+            [self sendThisMessage:[NSString stringWithFormat:@"%d",([[_projGrid objectAtIndex:0] integerValue]+(i * _gridsize))]];
             [self sendThisMessage:@" "];
-            [self sendThisMessage:([NSString stringWithFormat:@"%ld",[[_projGrid objectAtIndex:3] integerValue]])];
+            [self sendThisMessage:([NSString stringWithFormat:@"%ld",(long)[[_projGrid objectAtIndex:3] integerValue]])];
             [self sendThisMessage:_userRGB];
             //NSLog(@"VertLeft to Center Shading has executed %i times", i);
             [NSThread sleepForTimeInterval:_delayInSeconds];
             //vert lins from right edge to center
             [self sendThisMessage:@"(UTP5 "];
-            [self sendThisMessage:[NSString stringWithFormat:@"%ld",([[_projGrid objectAtIndex:2] integerValue]-(i * _gridsize))]];
+            [self sendThisMessage:[NSString stringWithFormat:@"%d",([[_projGrid objectAtIndex:2] integerValue]-(i * _gridsize))]];
             [self sendThisMessage:@" "];
-            [self sendThisMessage:([NSString stringWithFormat:@"%ld",[[_projGrid objectAtIndex:1] integerValue]])];
+            [self sendThisMessage:([NSString stringWithFormat:@"%ld",(long)[[_projGrid objectAtIndex:1] integerValue]])];
             [self sendThisMessage:@" "];
-            [self sendThisMessage:[NSString stringWithFormat:@"%ld",([[_projGrid objectAtIndex:2] integerValue]-(i * _gridsize))]];
+            [self sendThisMessage:[NSString stringWithFormat:@"%d",([[_projGrid objectAtIndex:2] integerValue]-(i * _gridsize))]];
             [self sendThisMessage:@" "];
-            [self sendThisMessage:([NSString stringWithFormat:@"%ld",[[_projGrid objectAtIndex:3] integerValue]])];
+            [self sendThisMessage:([NSString stringWithFormat:@"%ld",(long)[[_projGrid objectAtIndex:3] integerValue]])];
             [self sendThisMessage:_userRGB];
             
             // NSLog(@"VertRight to Center Shading has executed %i times", i);
@@ -205,21 +217,21 @@
         [self sendThisMessage:@"(UTP5 "];
         [self sendThisMessage:[NSString stringWithFormat:@"%d", _centerLeft]];
         [self sendThisMessage:@" "];
-        [self sendThisMessage:([NSString stringWithFormat:@"%ld",[[_projGrid objectAtIndex:1] integerValue]])];
+        [self sendThisMessage:([NSString stringWithFormat:@"%ld",(long)[[_projGrid objectAtIndex:1] integerValue]])];
         [self sendThisMessage:@" "];
         [self sendThisMessage:[NSString stringWithFormat:@"%d", _centerLeft]];
         [self sendThisMessage:@" "];
-        [self sendThisMessage:([NSString stringWithFormat:@"%ld",[[_projGrid objectAtIndex:3] integerValue]])];
+        [self sendThisMessage:([NSString stringWithFormat:@"%ld",(long)[[_projGrid objectAtIndex:3] integerValue]])];
         [self sendThisMessage:_userRGB];
         [NSThread sleepForTimeInterval:0.02f];
         [self sendThisMessage:@"(UTP5 "];
         [self sendThisMessage:[NSString stringWithFormat:@"%d", _centerRight]];
         [self sendThisMessage:@" "];
-        [self sendThisMessage:([NSString stringWithFormat:@"%ld",[[_projGrid objectAtIndex:1] integerValue]])];
+        [self sendThisMessage:([NSString stringWithFormat:@"%ld",(long)[[_projGrid objectAtIndex:1] integerValue]])];
         [self sendThisMessage:@" "];
         [self sendThisMessage:[NSString stringWithFormat:@"%d", _centerRight]];
         [self sendThisMessage:@" "];
-        [self sendThisMessage:([NSString stringWithFormat:@"%ld",[[_projGrid objectAtIndex:3] integerValue]])];
+        [self sendThisMessage:([NSString stringWithFormat:@"%ld",(long)[[_projGrid objectAtIndex:3] integerValue]])];
         [self sendThisMessage:_userRGB];
         [NSThread sleepForTimeInterval:_delayInSeconds];
         i = 0;
@@ -227,24 +239,24 @@
         while (i < ((_gridBoxesHigh/2)+1)) {
             //Horizontal lines from top to middle
             [self sendThisMessage:@"(UTP5 "];
-            [self sendThisMessage:[NSString stringWithFormat:@"%ld",([[_projGrid objectAtIndex:0] integerValue])]];
+            [self sendThisMessage:[NSString stringWithFormat:@"%ld",(long)([[_projGrid objectAtIndex:0] integerValue])]];
             [self sendThisMessage:@" "];
-            [self sendThisMessage:([NSString stringWithFormat:@"%ld",[[_projGrid objectAtIndex:1] integerValue]+(i * _gridsize)])];
+            [self sendThisMessage:([NSString stringWithFormat:@"%d",[[_projGrid objectAtIndex:1] integerValue]+(i * _gridsize)])];
             [self sendThisMessage:@" "];
-            [self sendThisMessage:[NSString stringWithFormat:@"%ld",([[_projGrid objectAtIndex:2] integerValue])]];
+            [self sendThisMessage:[NSString stringWithFormat:@"%ld",(long)([[_projGrid objectAtIndex:2] integerValue])]];
             [self sendThisMessage:@" "];
-            [self sendThisMessage:([NSString stringWithFormat:@"%ld",[[_projGrid objectAtIndex:1] integerValue]+(i * _gridsize)])];
+            [self sendThisMessage:([NSString stringWithFormat:@"%d",[[_projGrid objectAtIndex:1] integerValue]+(i * _gridsize)])];
             [self sendThisMessage:_userRGB];
             [NSThread sleepForTimeInterval:_delayInSeconds];
             //Horizontal lins from bottom to middle
             [self sendThisMessage:@"(UTP5 "];
-            [self sendThisMessage:[NSString stringWithFormat:@"%ld",([[_projGrid objectAtIndex:0] integerValue])]];
+            [self sendThisMessage:[NSString stringWithFormat:@"%ld",(long)([[_projGrid objectAtIndex:0] integerValue])]];
             [self sendThisMessage:@" "];
-            [self sendThisMessage:([NSString stringWithFormat:@"%ld",[[_projGrid objectAtIndex:3] integerValue]-(i * _gridsize)])];
+            [self sendThisMessage:([NSString stringWithFormat:@"%d",[[_projGrid objectAtIndex:3] integerValue]-(i * _gridsize)])];
             [self sendThisMessage:@" "];
-            [self sendThisMessage:[NSString stringWithFormat:@"%ld",([[_projGrid objectAtIndex:2] integerValue])]];
+            [self sendThisMessage:[NSString stringWithFormat:@"%ld",(long)([[_projGrid objectAtIndex:2] integerValue])]];
             [self sendThisMessage:@" "];
-            [self sendThisMessage:([NSString stringWithFormat:@"%ld",[[_projGrid objectAtIndex:3] integerValue]-(i * _gridsize)])];
+            [self sendThisMessage:([NSString stringWithFormat:@"%d",[[_projGrid objectAtIndex:3] integerValue]-(i * _gridsize)])];
             [self sendThisMessage:_userRGB];
             [NSThread sleepForTimeInterval:0.02f];
             i++;
@@ -327,14 +339,14 @@
 	NSData *data = [[NSData alloc] initWithData:[response dataUsingEncoding:NSASCIIStringEncoding]];
 	[outputStream write:[data bytes] maxLength:[data length]];
     
-    NSLog(@"%@ just written to ipAddress:%@", response, _ipAddress);
+    // NSLog(@"%@ just written to ipAddress:%@", response, _ipAddress);
     
 }
 
 - (void)initNetworkCommunication {
     CFReadStreamRef readStream;
     CFWriteStreamRef writeStream;
-    CFStreamCreatePairWithSocketToHost(NULL, CFBridgingRetain(_ipAddress), 1234, &readStream, &writeStream);
+    CFStreamCreatePairWithSocketToHost(NULL, CFBridgingRetain(_ipAddress), _thePort, &readStream, &writeStream);
     inputStream = (NSInputStream *)CFBridgingRelease(readStream);
     outputStream = (NSOutputStream *)CFBridgingRelease(writeStream);
     
