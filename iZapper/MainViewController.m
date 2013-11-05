@@ -20,7 +20,7 @@
     NSArray *_sxga_sxga, *_hd_sxga, *_hd_hd, *_wuxga_sxga, *_wuxga_hd, *_wuxga_wuxga, *_gridNames;
     NSString *_R, *_G, *_B, *_C, *_Y, *_M, *_W, *_shadedRGB, *_chosenProjector, *_userRGB;
     int _gridBoxesWide, _gridBoxesHigh, _centerLeft, _centerRight, _middleTop, _middleBottom, _gridsize, _delayBtwLines, _thePort;
-    double _delayInSeconds;
+    double _delayInSeconds, _tinyDelay;
     NSArray *_projGrid;
     NSInteger *_selectedGrid;
     
@@ -68,7 +68,9 @@
     _gridsize = 64;
     _delayBtwLines = 50;
     _delayInSeconds = 0.05f;
+    _tinyDelay = 0.01f;
 
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -161,7 +163,7 @@
             [self sendThisMessage:([NSString stringWithFormat:@"%ld",(long)[[_projGrid objectAtIndex:3] integerValue]])];
             [self sendThisMessage:_shadedRGB];
             // NSLog(@"Vertical Shading has executed %i times", i);
-            [NSThread sleepForTimeInterval:_delayInSeconds];
+            [NSThread sleepForTimeInterval:_tinyDelay];
             i++;
         }
         i = 0;
@@ -178,7 +180,7 @@
             [self sendThisMessage:([NSString stringWithFormat:@"%d",([[_projGrid objectAtIndex:4] integerValue]+i)])];
             [self sendThisMessage:_shadedRGB];
             // NSLog(@"Horizontal Shading has executed %i times", i);
-            [NSThread sleepForTimeInterval:_delayInSeconds];
+            [NSThread sleepForTimeInterval:_tinyDelay];
             i++;
         }
         i = 0;
@@ -359,6 +361,47 @@
     [inputStream open];
     [outputStream open];
 }
+
+#pragma mark NSStream Delegate
+
+- (void)stream:(NSStream *)theStream handleEvent:(NSStreamEvent)streamEvent {
+	NSLog(@"stream event %i", streamEvent);
+    
+    typedef enum {
+        NSStreamEventNone = 0,
+        NSStreamEventOpenCompleted = 1 << 0,
+        NSStreamEventHasBytesAvailable = 1 << 1,
+        NSStreamEventHasSpaceAvailable = 1 << 2,
+        NSStreamEventErrorOccurred = 1 << 3,
+        NSStreamEventEndEncountered = 1 << 4
+    };
+    
+    switch (streamEvent) {
+            
+		case NSStreamEventOpenCompleted:
+			NSLog(@"Stream opened");
+			break;
+            
+		case NSStreamEventHasBytesAvailable:
+			break;
+            
+		case NSStreamEventErrorOccurred:
+			NSLog(@"Can not connect to the host!");
+            
+			break;
+            
+		case NSStreamEventEndEncountered:
+			[theStream close];
+            [theStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+            break;
+            
+		default:
+			NSLog(@"Unknown event");
+	}
+
+}
+
+
 
 #pragma mark Pickerview Datasource
 
