@@ -30,9 +30,14 @@
 {
     [super viewDidLoad];
 	//for testing set default ip manually
-    _ipAddress = @"192.168.8.1";
+    _ipAddress = @"192.168.1.100";
+    //and set a default value for laziness
+    [_ipTextField setText:_ipAddress];
     
     _gridNames = [NSArray arrayWithObjects:@"_sxga_sxga",@"hd_sxga", @"hd_hd", @"wuxga_sxga", @"wuxga_hd", @"wuxga_wuxga", nil];
+    
+    //Forces an array into _projGrid incase user doesnt touch UIPickerView
+    _projGrid = _sxga_sxga;
     
     
     //Colour Choices
@@ -131,11 +136,11 @@
     
     [self sendThisMessage:@"(UTP0)"];
     
-    /*if (![[_messageOverride stringValue]  isEqual: @""]){
-        [self sendThisMessage:[_messageOverride stringValue]];
+    if (![_overwriteTextField.text  isEqual: @""]){
+        [self sendThisMessage:_overwriteTextField.text];
         NSLog(@"Used the ovrerride method");
-    } else { */
         
+    } else {
         int i = 0;
         while (i < [[_projGrid objectAtIndex:7] integerValue]){
             [self sendThisMessage:@"(UTP5 "];
@@ -268,7 +273,7 @@
         
         
         
-    //}
+    }
     
     
     NSLog(@"Reached the end of the draw calls");
@@ -277,6 +282,11 @@
     [outputStream close];
     
     
+}
+
+- (IBAction)clearKeyboardAction:(id)sender {
+    [_ipTextField resignFirstResponder];
+    [_overwriteTextField resignFirstResponder];
 }
 
 -(void)chooseColour{
@@ -317,14 +327,14 @@
 	NSData *data = [[NSData alloc] initWithData:[response dataUsingEncoding:NSASCIIStringEncoding]];
 	[outputStream write:[data bytes] maxLength:[data length]];
     
-    // NSLog(@"%@ just written to ipAddress:%@", response, _ipAddress);
+    NSLog(@"%@ just written to ipAddress:%@", response, _ipAddress);
     
 }
 
 - (void)initNetworkCommunication {
     CFReadStreamRef readStream;
     CFWriteStreamRef writeStream;
-    CFStreamCreatePairWithSocketToHost(NULL, CFBridgingRetain(_ipAddress), 3002, &readStream, &writeStream);
+    CFStreamCreatePairWithSocketToHost(NULL, CFBridgingRetain(_ipAddress), 1234, &readStream, &writeStream);
     inputStream = (NSInputStream *)CFBridgingRelease(readStream);
     outputStream = (NSOutputStream *)CFBridgingRelease(writeStream);
     
