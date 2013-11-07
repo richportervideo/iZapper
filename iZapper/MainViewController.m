@@ -23,6 +23,7 @@
     double _delayInSeconds, _tinyDelay;
     NSArray *_projGrid;
     NSInteger *_selectedGrid;
+    NSTimer* connectionTimeoutTimer;
     
     
 }
@@ -146,7 +147,7 @@
     }
     
     [self sendThisMessage:@"(UTP0)"];
-    
+    NSDate *drawCallStart = [NSDate date];
     if (3<2){
         NSLog(@"This method should never be called");
         
@@ -288,7 +289,9 @@
         
         
     }
-    
+    NSDate *drawCallFinish = [NSDate date];
+    NSTimeInterval drawLength = [drawCallFinish timeIntervalSinceDate:drawCallStart];
+    NSLog(@"Drawcalls take %f seconds", drawLength);
     
     NSLog(@"Reached the end of the draw calls");
     
@@ -300,7 +303,6 @@
 
 - (IBAction)clearKeyboardAction:(id)sender {
     [_ipTextField resignFirstResponder];
-    [_overwriteTextField resignFirstResponder];
 }
 
 -(void)chooseColour{
@@ -358,23 +360,17 @@
     [inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     
+    
     [inputStream open];
     [outputStream open];
+    
+    
 }
 
 #pragma mark NSStream Delegate
 
 - (void)stream:(NSStream *)theStream handleEvent:(NSStreamEvent)streamEvent {
 	NSLog(@"stream event %i", streamEvent);
-    
-    typedef enum {
-        NSStreamEventNone = 0,
-        NSStreamEventOpenCompleted = 1 << 0,
-        NSStreamEventHasBytesAvailable = 1 << 1,
-        NSStreamEventHasSpaceAvailable = 1 << 2,
-        NSStreamEventErrorOccurred = 1 << 3,
-        NSStreamEventEndEncountered = 1 << 4
-    };
     
     switch (streamEvent) {
             
@@ -385,11 +381,24 @@
 		case NSStreamEventHasBytesAvailable:
 			break;
             
-		case NSStreamEventErrorOccurred:
+		case NSStreamEventErrorOccurred:{
 			NSLog(@"Can not connect to the host!");
             
-			break;
+            NSError* error = [theStream streamError];
             
+            NSString* errorMessage = [NSString stringWithFormat:@"%@ (Code = %d)",
+                                      [error localizedDescription],
+                                      [error code]];
+            UIAlertView *wifiLostAlert = [[UIAlertView alloc]
+                                          initWithTitle:@"Stream Error"
+                                          message:errorMessage
+                                          delegate:nil
+                                          cancelButtonTitle:@"Continue"
+                                          otherButtonTitles:nil];
+            [wifiLostAlert show];
+    
+			break;
+        }
 		case NSStreamEventEndEncountered:
 			[theStream close];
             [theStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
@@ -461,5 +470,12 @@
     }
 
 }
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
+}
+
+
 
 @end
