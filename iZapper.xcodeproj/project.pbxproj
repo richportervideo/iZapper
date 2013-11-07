@@ -22,6 +22,10 @@
 		9B425EC6181DA30A002BAFFD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B425EA5181DA30A002BAFFD /* UIKit.framework */; };
 		9B425ECE181DA30A002BAFFD /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9B425ECC181DA30A002BAFFD /* InfoPlist.strings */; };
 		9B425ED0181DA30A002BAFFD /* iZapperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B425ECF181DA30A002BAFFD /* iZapperTests.m */; };
+		9B6F566A182BEB5000BEAD16 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B6F5669182BEB5000BEAD16 /* CFNetwork.framework */; };
+		9B6F566B182BEB5800BEAD16 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B6F5667182BEA6E00BEAD16 /* SystemConfiguration.framework */; };
+		9B6F5670182BEB9D00BEAD16 /* SimplePing.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6F566D182BEB9D00BEAD16 /* SimplePing.m */; };
+		9B6F5671182BEB9D00BEAD16 /* SimplePingHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B6F566F182BEB9D00BEAD16 /* SimplePingHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +60,12 @@
 		9B425ECB181DA30A002BAFFD /* iZapperTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iZapperTests-Info.plist"; sourceTree = "<group>"; };
 		9B425ECD181DA30A002BAFFD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		9B425ECF181DA30A002BAFFD /* iZapperTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iZapperTests.m; sourceTree = "<group>"; };
+		9B6F5667182BEA6E00BEAD16 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		9B6F5669182BEB5000BEAD16 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		9B6F566C182BEB9D00BEAD16 /* SimplePing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimplePing.h; sourceTree = "<group>"; };
+		9B6F566D182BEB9D00BEAD16 /* SimplePing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimplePing.m; sourceTree = "<group>"; };
+		9B6F566E182BEB9D00BEAD16 /* SimplePingHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimplePingHelper.h; sourceTree = "<group>"; };
+		9B6F566F182BEB9D00BEAD16 /* SimplePingHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimplePingHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +73,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B6F566B182BEB5800BEAD16 /* SystemConfiguration.framework in Frameworks */,
+				9B6F566A182BEB5000BEAD16 /* CFNetwork.framework in Frameworks */,
 				9B425EA4181DA30A002BAFFD /* CoreGraphics.framework in Frameworks */,
 				9B425EA6181DA30A002BAFFD /* UIKit.framework in Frameworks */,
 				9B425EA2181DA30A002BAFFD /* Foundation.framework in Frameworks */,
@@ -104,6 +116,8 @@
 		9B425EA0181DA30A002BAFFD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9B6F5669182BEB5000BEAD16 /* CFNetwork.framework */,
+				9B6F5667182BEA6E00BEAD16 /* SystemConfiguration.framework */,
 				9B425EA1181DA30A002BAFFD /* Foundation.framework */,
 				9B425EA3181DA30A002BAFFD /* CoreGraphics.framework */,
 				9B425EA5181DA30A002BAFFD /* UIKit.framework */,
@@ -122,6 +136,10 @@
 				9B425EB7181DA30A002BAFFD /* MainViewController.m */,
 				9B425EB9181DA30A002BAFFD /* FlipsideViewController.h */,
 				9B425EBA181DA30A002BAFFD /* FlipsideViewController.m */,
+				9B6F566C182BEB9D00BEAD16 /* SimplePing.h */,
+				9B6F566D182BEB9D00BEAD16 /* SimplePing.m */,
+				9B6F566E182BEB9D00BEAD16 /* SimplePingHelper.h */,
+				9B6F566F182BEB9D00BEAD16 /* SimplePingHelper.m */,
 				9B425EBC181DA30A002BAFFD /* Images.xcassets */,
 				9B425EA8181DA30A002BAFFD /* Supporting Files */,
 			);
@@ -260,7 +278,9 @@
 				9B425EB2181DA30A002BAFFD /* AppDelegate.m in Sources */,
 				9B425EB8181DA30A002BAFFD /* MainViewController.m in Sources */,
 				9B425EBB181DA30A002BAFFD /* FlipsideViewController.m in Sources */,
+				9B6F5670182BEB9D00BEAD16 /* SimplePing.m in Sources */,
 				9B425EAE181DA30A002BAFFD /* main.m in Sources */,
+				9B6F5671182BEB9D00BEAD16 /* SimplePingHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

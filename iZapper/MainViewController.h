@@ -15,12 +15,14 @@
 @property (weak, nonatomic) IBOutlet UISegmentedControl *drawOnSegment;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *colourSelectSegment;
 @property (weak, nonatomic) IBOutlet UIPickerView *gridPicker;
+@property(nonatomic,assign) IBOutlet UITextView* results;
 
 
 
 
 - (IBAction)zapAction:(id)sender;
 - (IBAction)clearKeyboardAction:(id)sender;
+- (IBAction)testing:(id)sender;
 
 
 
