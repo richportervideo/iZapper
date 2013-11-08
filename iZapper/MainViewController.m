@@ -96,6 +96,7 @@
     }
 }
 
+//Runs when the user presses ZAP!
 - (IBAction)zapAction:(id)sender {
     
     
@@ -118,13 +119,9 @@
         [self sendThisMessage:@"(UTP0)"];
         [self setupZap];
         [self drawCall];
-        _drawCallFinished = nil;
-        while (_drawCallFinished == nil){
-            [[NSRunLoop currentRunLoop]runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
-        }
-        [inputStream close];
-        [outputStream close];
-
+        
+        
+        NSLog(@"ZAPCALL: drawCallFinished: %@", _drawCallFinished);
     } else {
         
     UIAlertView *ipProblem = [[UIAlertView alloc]
@@ -135,10 +132,9 @@
                                      otherButtonTitles:nil];
     [ipProblem show];
     }
-    
-    
 }
 
+//Draws the grid yo!
 -(void) drawCall {
     NSLog(@"Inititated Draw Call...");
     NSLog(@"drawCallFinished:%@", _drawCallFinished);
@@ -283,8 +279,14 @@ NSTimeInterval drawLength = [drawCallFinish timeIntervalSinceDate:drawCallStart]
 NSLog(@"...drawcalls take %f seconds", drawLength);
 
 NSLog(@"Reached the end of the draw calls");
-    _drawCallFinished = @"DONE!";
-    NSLog(@"drawCallFinished:%@",_drawCallFinished);
+    NSString* str = @"Done!";
+    _drawCallFinished = str;
+
+    
+    [inputStream close];
+    [outputStream close];
+    [inputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    [outputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 
 }
 
@@ -292,14 +294,8 @@ NSLog(@"Reached the end of the draw calls");
     [_ipTextField resignFirstResponder];
 }
 
-- (IBAction)testing:(id)sender {
- 
-    int theResult =[self checkIPAdress];
-    NSLog(@"The result is:%i", theResult);
-    
-    
-}
 
+//This takes the users choice of colour from the segmentedControl and sets the value ready for the zapAction
 -(void)chooseColour{
     NSInteger theIndex = [_colourSelectSegment selectedSegmentIndex];
     switch (theIndex) {
@@ -331,6 +327,8 @@ NSLog(@"Reached the end of the draw calls");
     
 }
 
+
+//Broke the setup calls off into their own method. Makes the zapAction method easier to read.
 -(void)setupZap{
     
     NSLog(@"STARTING SETUP");
@@ -369,6 +367,8 @@ NSLog(@"Reached the end of the draw calls");
 
 }
 
+
+//Full IP Check method. Returns 1 if Happy 0 if Sad
 -(int) checkIPAdress {
     
     everythingsOK = 1;
@@ -414,6 +414,8 @@ NSLog(@"Reached the end of the draw calls");
     
     return everythingsOK;
 }
+
+// Checks to see if simple ping was a success. Opens UIAlerrt and Flags everythingsOK if ping fails
 -(void)checkPingReadout{
     
     if ([_pingReadout  isEqual: @"SUCCESS"]){
@@ -434,16 +436,9 @@ NSLog(@"Reached the end of the draw calls");
 
     
 }
-- (void)sendThisMessage:(NSString*)message{
-    
-    NSString *response  = [NSString stringWithFormat:@"%@", message ];
-	NSData *data = [[NSData alloc] initWithData:[response dataUsingEncoding:NSASCIIStringEncoding]];
-	[outputStream write:[data bytes] maxLength:[data length]];
-    
-    // NSLog(@"%@ just written to ipAddress:%@", response, _ipAddress);
-    
-}
 
+
+//Opens up the Comms stream to the projector
 - (void)initNetworkCommunication {
 
     CFReadStreamRef readStream;
@@ -461,6 +456,16 @@ NSLog(@"Reached the end of the draw calls");
     
     [inputStream open];
     [outputStream open];
+    
+}
+//Sends message down the opened Comms stream
+- (void)sendThisMessage:(NSString*)message{
+    
+    NSString *response  = [NSString stringWithFormat:@"%@", message ];
+	NSData *data = [[NSData alloc] initWithData:[response dataUsingEncoding:NSASCIIStringEncoding]];
+	[outputStream write:[data bytes] maxLength:[data length]];
+    
+    // NSLog(@"%@ just written to ipAddress:%@", response, _ipAddress);
     
 }
 
@@ -568,13 +573,14 @@ NSLog(@"Reached the end of the draw calls");
 
 }
 
+// Resigns first responder for _ipTextField
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     _ipAddress = _ipTextField.text;
     return YES;
 }
 
-
+// This method checks to see if the input ip address consists of 4 quads separated by dots.
 - (int) validateUrl: (NSString *) ipAddressStr{
     NSString *ipValidStr = ipAddressStr;
     NSString *ipRegEx =
@@ -592,6 +598,7 @@ NSLog(@"Reached the end of the draw calls");
     
 }
 
+// Next 3 Methods part of PingHelper. Used to Ping the input IP before passing it to the initcommunications method.
               
 - (void)tapPing: (NSString*)testIP {
 

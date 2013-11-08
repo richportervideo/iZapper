@@ -22,7 +22,6 @@
 
 - (IBAction)zapAction:(id)sender;
 - (IBAction)clearKeyboardAction:(id)sender;
-- (IBAction)testing:(id)sender;
 
 
 
