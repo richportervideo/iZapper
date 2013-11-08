@@ -19,7 +19,7 @@
     NSOutputStream *outputStream;
     NSString * _ipAddress;
     NSArray *_sxga_sxga, *_hd_sxga, *_hd_hd, *_wuxga_sxga, *_wuxga_hd, *_wuxga_wuxga, *_gridNames;
-    NSString *_R, *_G, *_B, *_C, *_Y, *_M, *_W, *_shadedRGB, *_chosenProjector, *_userRGB, *_pingReadout;
+    NSString *_R, *_G, *_B, *_C, *_Y, *_M, *_W, *_shadedRGB, *_chosenProjector, *_userRGB, *_pingReadout, *_drawCallFinished;
     int _gridBoxesWide, _gridBoxesHigh, _centerLeft, _centerRight, _middleTop, _middleBottom, _gridsize, _delayBtwLines, _thePort, everythingsOK;
     double _delayInSeconds, _tinyDelay;
     NSArray *_projGrid;
@@ -44,7 +44,7 @@
     
     //Forces an array into _projGrid incase user doesnt touch UIPickerView
     _projGrid = _sxga_sxga;
-    
+    [_gridPicker selectedRowInComponent:0];
     
     //Colour Choices
     _R = @" 255 0 0)";
@@ -98,10 +98,6 @@
 
 - (IBAction)zapAction:(id)sender {
     
-    //...Useful Setup stuff...\\
-    
-    
-    [self setupZap];
     
     //Get IP Address
     
@@ -113,45 +109,41 @@
     
     //Start the Network stream to the projector
     
-    [self startConnectionTimeoutTimer];
-    bool hasNetworkConnected = [self initNetworkCommunication];
-    if (hasNetworkConnected) {
-        NSLog(@"Network has connected");
-    } else{
-        [self handleConnectionTimeout];
-    }
-    
-    if ([_drawOnSegment selectedSegmentIndex] == 0) {
-        [self sendThisMessage:@"(ITP5)"];
-        NSLog(@"Sent (ITP5) for draw on black");
-    }
-    
-    [self sendThisMessage:@"(UTP0)"];
-    
-    if (ipselfcheck ==1){
+    if (ipselfcheck == 1){
+        [self initNetworkCommunication];
+        if ([_drawOnSegment selectedSegmentIndex] == 0) {
+            [self sendThisMessage:@"(ITP5)"];
+            NSLog(@"Sent (ITP5) for draw on black");
+        }
+        [self sendThisMessage:@"(UTP0)"];
+        [self setupZap];
         [self drawCall];
-    } else if (ipselfcheck ==0) {
-        UIAlertView *ipProblem = [[UIAlertView alloc]
-                                  initWithTitle:@"IPProblem"
-                                  message:@"You've got IP Issues"
-                                  delegate:nil
-                                  cancelButtonTitle:@"Bad Times"
-                                  otherButtonTitles:nil];
-        [ipProblem show];
+        _drawCallFinished = nil;
+        while (_drawCallFinished == nil){
+            [[NSRunLoop currentRunLoop]runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+        }
+        [inputStream close];
+        [outputStream close];
 
+    } else {
         
+    UIAlertView *ipProblem = [[UIAlertView alloc]
+                                     initWithTitle:@"IPProblem"
+                                     message:@"You've got IP Issues"
+                                     delegate:nil
+                                     cancelButtonTitle:@"Bad Times"
+                                     otherButtonTitles:nil];
+    [ipProblem show];
     }
-    
-    [self stopConnectionTimeoutTimer];
-    
-    [inputStream close];
-    [outputStream close];
     
     
 }
 
 -(void) drawCall {
+    NSLog(@"Inititated Draw Call...");
+    NSLog(@"drawCallFinished:%@", _drawCallFinished);
     NSDate *drawCallStart = [NSDate date];
+    
     int i = 0;
     while (i < [[_projGrid objectAtIndex:7] integerValue]){
         [self sendThisMessage:@"(UTP5 "];
@@ -163,7 +155,7 @@
         [self sendThisMessage:@" "];
         [self sendThisMessage:([NSString stringWithFormat:@"%ld",(long)[[_projGrid objectAtIndex:3] integerValue]])];
         [self sendThisMessage:_shadedRGB];
-        // NSLog(@"Vertical Shading has executed %i times", i);
+        //NSLog(@"Vertical Shading has executed %i times", i);
         [NSThread sleepForTimeInterval:_tinyDelay];
         i++;
     }
@@ -288,9 +280,11 @@
     
 NSDate *drawCallFinish = [NSDate date];
 NSTimeInterval drawLength = [drawCallFinish timeIntervalSinceDate:drawCallStart];
-NSLog(@"Drawcalls take %f seconds", drawLength);
+NSLog(@"...drawcalls take %f seconds", drawLength);
 
 NSLog(@"Reached the end of the draw calls");
+    _drawCallFinished = @"DONE!";
+    NSLog(@"drawCallFinished:%@",_drawCallFinished);
 
 }
 
@@ -378,7 +372,6 @@ NSLog(@"Reached the end of the draw calls");
 -(int) checkIPAdress {
     
     everythingsOK = 1;
-    _ipAddress = _ipTextField.text;
     if (![_ipAddress  isEqual: @""]){
         
     } else {
@@ -395,7 +388,7 @@ NSLog(@"Reached the end of the draw calls");
     
     if ( [self validateUrl:_ipAddress] ==1){
         
-        NSLog(@"IP Passed Validation Check");
+        NSLog(@"IP Format Check Passed. Looks like a valid IP: xx.xx.xx.xx");
     } else {
         everythingsOK = 0;
         NSLog(@"WRONG FORMAT IP");
@@ -409,11 +402,15 @@ NSLog(@"Reached the end of the draw calls");
         
     }
     
+    _pingReadout = nil;
     [self tapPing:_ipAddress];
     
-    [NSTimer scheduledTimerWithTimeInterval:1.5 target:self selector:@selector(checkPingReadout) userInfo:nil repeats:NO];
+    while (_pingReadout == nil){
+        [[NSRunLoop currentRunLoop]runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+    }
     
-    [NSThread sleepForTimeInterval:2];
+    [self checkPingReadout];
+
     
     return everythingsOK;
 }
@@ -447,7 +444,7 @@ NSLog(@"Reached the end of the draw calls");
     
 }
 
-- (BOOL)initNetworkCommunication {
+- (void)initNetworkCommunication {
 
     CFReadStreamRef readStream;
     CFWriteStreamRef writeStream;
@@ -464,8 +461,6 @@ NSLog(@"Reached the end of the draw calls");
     
     [inputStream open];
     [outputStream open];
-    return YES;
-    
     
 }
 
@@ -580,47 +575,6 @@ NSLog(@"Reached the end of the draw calls");
 }
 
 
-#pragma mark Connection timeout handling.
-
-//This is called when you try to negotiated connection
-- (void)startConnectionTimeoutTimer
-{
-    [self stopConnectionTimeoutTimer]; // Or make sure any existing timer is stopped before this method is called
-    
-    NSTimeInterval interval = 3.0; // Measured in seconds, is a double
-    
-    self.connectionTimeoutTimer = [NSTimer scheduledTimerWithTimeInterval:interval
-                                                                   target:self
-                                                                 selector:@selector(handleConnectionTimeout)
-                                                                 userInfo:nil
-                                                                  repeats:NO];
-}
-//This should be called when connection is successful
-- (void)stopConnectionTimeoutTimer
-{
-    if (_connectionTimeoutTimer)
-    {
-        [_connectionTimeoutTimer invalidate];
-        _connectionTimeoutTimer = nil;
-    }
-}
-
-- (void)handleConnectionTimeout
-{
-    NSLog(@"COULD NOT CONNECT TO SOCKET!");
-    UIAlertView *couldNotConnect = [[UIAlertView alloc]
-                                  initWithTitle:@"Stream Error"
-                                  message:@"Could not connect to IP Address"
-                                  delegate:nil
-                                  cancelButtonTitle:@"Continue"
-                                  otherButtonTitles:nil];
-    [couldNotConnect show];
-    [inputStream close];
-    [outputStream close];
-    [inputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-    [outputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-}
-
 - (int) validateUrl: (NSString *) ipAddressStr{
     NSString *ipValidStr = ipAddressStr;
     NSString *ipRegEx =
@@ -659,6 +613,7 @@ NSLog(@"Reached the end of the draw calls");
 	self.results.text = [NSString stringWithFormat:@"%@%@\n", self.results.text, str];
 	NSLog(@"log: %@", str);
     _pingReadout = str;
+
 }
 
 @end
