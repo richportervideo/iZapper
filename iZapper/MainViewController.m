@@ -40,7 +40,7 @@
     [_ipTextField setText:_ipAddress];
     _pingReadout = @"FAIL";
     
-    _gridNames = [NSArray arrayWithObjects:@"_sxga_sxga",@"hd_sxga", @"hd_hd", @"wuxga_sxga", @"wuxga_hd", @"wuxga_wuxga", nil];
+    _gridNames = [NSArray arrayWithObjects:@"Draw sxga on sxga",@"Draw sxga on hd", @"Draw hd on hd", @"Draw sxga on wuxga", @"Draw hd on wuxga", @"Draw wuxga on wuxga", nil];
     
     //Forces an array into _projGrid incase user doesnt touch UIPickerView
     _projGrid = _sxga_sxga;
