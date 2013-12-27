@@ -331,6 +331,7 @@ NSLog(@"Reached the end of the draw calls");
 //Broke the setup calls off into their own method. Makes the zapAction method easier to read.
 -(void)setupZap{
     
+    NSLog(@"");
     NSLog(@"STARTING SETUP");
     NSLog(@"=============================");
     //Get the desired grid...
@@ -618,7 +619,7 @@ NSLog(@"Reached the end of the draw calls");
 
 - (void)log:(NSString*)str {
 	self.results.text = [NSString stringWithFormat:@"%@%@\n", self.results.text, str];
-	NSLog(@"log: %@", str);
+	// NSLog(@"log: %@", str);
     _pingReadout = str;
 
 }

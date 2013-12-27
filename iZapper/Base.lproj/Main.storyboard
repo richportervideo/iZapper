@@ -78,7 +78,7 @@
                                 </segments>
                             </segmentedControl>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="swY-pi-Kmi">
-                                <rect key="frame" x="103" y="437" width="114" height="65"/>
+                                <rect key="frame" x="103" y="436" width="114" height="65"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="Arial-BoldMT" family="Arial" pointSize="41"/>
                                 <state key="normal" title="ZAP!"/>
