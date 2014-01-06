@@ -147,7 +147,7 @@
         [self sendThisMessage:@" "];
         [self sendThisMessage:([NSString stringWithFormat:@"%ld",(long)[[_projGrid objectAtIndex:1] integerValue]])];
         [self sendThisMessage:@" "];
-        [self sendThisMessage:([NSString stringWithFormat:@"%d",([[_projGrid objectAtIndex:5] integerValue]+i)])];
+        [self sendThisMessage:([NSString stringWithFormat:@"%ld",([[_projGrid objectAtIndex:5] integerValue]+i)])];
         [self sendThisMessage:@" "];
         [self sendThisMessage:([NSString stringWithFormat:@"%ld",(long)[[_projGrid objectAtIndex:3] integerValue]])];
         [self sendThisMessage:_shadedRGB];
@@ -162,11 +162,11 @@
                                (long)
                                ([[_projGrid objectAtIndex:0] integerValue])]];
         [self sendThisMessage:@" "];
-        [self sendThisMessage:([NSString stringWithFormat:@"%d",([[_projGrid objectAtIndex:4] integerValue]+i)])];
+        [self sendThisMessage:([NSString stringWithFormat:@"%ld",([[_projGrid objectAtIndex:4] integerValue]+i)])];
         [self sendThisMessage:@" "];
         [self sendThisMessage:([NSString stringWithFormat:@"%ld",(long)[[_projGrid objectAtIndex:2] integerValue]])];
         [self sendThisMessage:@" "];
-        [self sendThisMessage:([NSString stringWithFormat:@"%d",([[_projGrid objectAtIndex:4] integerValue]+i)])];
+        [self sendThisMessage:([NSString stringWithFormat:@"%ld",([[_projGrid objectAtIndex:4] integerValue]+i)])];
         [self sendThisMessage:_shadedRGB];
         // NSLog(@"Horizontal Shading has executed %i times", i);
         [NSThread sleepForTimeInterval:_tinyDelay];
@@ -177,13 +177,13 @@
     while (i < (_gridBoxesWide/2) ){
         //vert lines from left edge to center
         [self sendThisMessage:@"(UTP5 "];
-        [self sendThisMessage:[NSString stringWithFormat:@"%d",([[_projGrid objectAtIndex:0] integerValue]+(i * _gridsize))]];
+        [self sendThisMessage:[NSString stringWithFormat:@"%ld",([[_projGrid objectAtIndex:0] integerValue]+(i * _gridsize))]];
         [self sendThisMessage:@" "];
         [self sendThisMessage
          
          :([NSString stringWithFormat:@"%ld",(long)[[_projGrid objectAtIndex:1] integerValue]])];
         [self sendThisMessage:@" "];
-        [self sendThisMessage:[NSString stringWithFormat:@"%d",([[_projGrid objectAtIndex:0] integerValue]+(i * _gridsize))]];
+        [self sendThisMessage:[NSString stringWithFormat:@"%ld",([[_projGrid objectAtIndex:0] integerValue]+(i * _gridsize))]];
         [self sendThisMessage:@" "];
         [self sendThisMessage:([NSString stringWithFormat:@"%ld",(long)[[_projGrid objectAtIndex:3] integerValue]])];
         [self sendThisMessage:_userRGB];
@@ -191,11 +191,11 @@
         [NSThread sleepForTimeInterval:_delayInSeconds];
         //vert lins from right edge to center
         [self sendThisMessage:@"(UTP5 "];
-        [self sendThisMessage:[NSString stringWithFormat:@"%d",([[_projGrid objectAtIndex:2] integerValue]-(i * _gridsize))]];
+        [self sendThisMessage:[NSString stringWithFormat:@"%ld",([[_projGrid objectAtIndex:2] integerValue]-(i * _gridsize))]];
         [self sendThisMessage:@" "];
         [self sendThisMessage:([NSString stringWithFormat:@"%ld",(long)[[_projGrid objectAtIndex:1] integerValue]])];
         [self sendThisMessage:@" "];
-        [self sendThisMessage:[NSString stringWithFormat:@"%d",([[_projGrid objectAtIndex:2] integerValue]-(i * _gridsize))]];
+        [self sendThisMessage:[NSString stringWithFormat:@"%ld",([[_projGrid objectAtIndex:2] integerValue]-(i * _gridsize))]];
         [self sendThisMessage:@" "];
         [self sendThisMessage:([NSString stringWithFormat:@"%ld",(long)[[_projGrid objectAtIndex:3] integerValue]])];
         [self sendThisMessage:_userRGB];
@@ -232,22 +232,22 @@
         [self sendThisMessage:@"(UTP5 "];
         [self sendThisMessage:[NSString stringWithFormat:@"%ld",(long)([[_projGrid objectAtIndex:0] integerValue])]];
         [self sendThisMessage:@" "];
-        [self sendThisMessage:([NSString stringWithFormat:@"%d",[[_projGrid objectAtIndex:1] integerValue]+(i * _gridsize)])];
+        [self sendThisMessage:([NSString stringWithFormat:@"%ld",[[_projGrid objectAtIndex:1] integerValue]+(i * _gridsize)])];
         [self sendThisMessage:@" "];
         [self sendThisMessage:[NSString stringWithFormat:@"%ld",(long)([[_projGrid objectAtIndex:2] integerValue])]];
         [self sendThisMessage:@" "];
-        [self sendThisMessage:([NSString stringWithFormat:@"%d",[[_projGrid objectAtIndex:1] integerValue]+(i * _gridsize)])];
+        [self sendThisMessage:([NSString stringWithFormat:@"%ld",[[_projGrid objectAtIndex:1] integerValue]+(i * _gridsize)])];
         [self sendThisMessage:_userRGB];
         [NSThread sleepForTimeInterval:_delayInSeconds];
         //Horizontal lins from bottom to middle
         [self sendThisMessage:@"(UTP5 "];
         [self sendThisMessage:[NSString stringWithFormat:@"%ld",(long)([[_projGrid objectAtIndex:0] integerValue])]];
         [self sendThisMessage:@" "];
-        [self sendThisMessage:([NSString stringWithFormat:@"%d",[[_projGrid objectAtIndex:3] integerValue]-(i * _gridsize)])];
+        [self sendThisMessage:([NSString stringWithFormat:@"%ld",[[_projGrid objectAtIndex:3] integerValue]-(i * _gridsize)])];
         [self sendThisMessage:@" "];
         [self sendThisMessage:[NSString stringWithFormat:@"%ld",(long)([[_projGrid objectAtIndex:2] integerValue])]];
         [self sendThisMessage:@" "];
-        [self sendThisMessage:([NSString stringWithFormat:@"%d",[[_projGrid objectAtIndex:3] integerValue]-(i * _gridsize)])];
+        [self sendThisMessage:([NSString stringWithFormat:@"%ld",[[_projGrid objectAtIndex:3] integerValue]-(i * _gridsize)])];
         [self sendThisMessage:_userRGB];
         [NSThread sleepForTimeInterval:0.02f];
         i++;
